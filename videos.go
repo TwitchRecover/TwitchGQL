@@ -31,7 +31,7 @@ type VideoRequest struct {
 	previewsUrl         bool
 	status              bool
 	tags                bool
-	thumbnailURLs       bool
+	thumbnailUrls       bool
 	title               bool
 	updatedAt           bool
 	viewCount           bool
@@ -44,16 +44,29 @@ type VideoRequestParams struct {
 }
 
 type VideoResponse struct {
-	animatedPreviewUrl string
-	broadcastType      string
-	createdAt          time.Time
-	deletedAt          time.Time
-	description        string
-	download           VideoDownload
-	duration           time.Duration
-	id                 int
-	softDeleted        bool
-	language           string
+	animatedPreviewUrl  string
+	broadcastType       string
+	createdAt           time.Time
+	deletedAt           time.Time
+	description         string
+	download            VideoDownload
+	duration            time.Duration
+	id                  int
+	softDeleted         bool
+	language            string
+	offsetSeconds       int
+	PlaybackAccessToken PlaybackAccessTokenResponse
+	publishedAt         time.Time
+	recordedAt          time.Time
+	scope               string
+	previewsUrl         string
+	status              string
+	tags                []string
+	thumbnailUrls       []string
+	title               string
+	updatedAt           time.Time
+	viewCount           int
+	viewableAt          time.Time
 }
 
 type VideoDownload struct {
