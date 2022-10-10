@@ -35,10 +35,10 @@ func (vd *VideoDownload) RequestParser() (string, error) {
 }
 
 func (vd *VideoDownload) ResponseParser(res []byte) {
-	if jsoniter.Get(res, "url").ToBool() {
+	if vd.request.url {
 		vd.response.url = jsoniter.Get(res, "url").ToString()
 	}
-	if jsoniter.Get(res, "status").ToBool() {
+	if vd.request.status {
 		vd.response.status = jsoniter.Get(res, "status").ToString()
 	}
 }
