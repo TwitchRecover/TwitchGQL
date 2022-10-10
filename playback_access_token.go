@@ -6,6 +6,12 @@ type PlaybackAccessToken struct {
 }
 
 type PlaybackAccessTokenRequest struct {
+	params    PlaybackAccessTokenRequestParams
+	signature bool
+	value     bool
+}
+
+type PlaybackAccessTokenRequestParams struct {
 	platform      string
 	playerType    string
 	playerBackend string
