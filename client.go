@@ -40,8 +40,8 @@ type Client struct {
 }
 
 type Type interface {
-	RequestParser(interface{}) (string, error)
-	ResponseParser([]byte) interface{}
+	RequestParser() (string, error)
+	ResponseParser([]byte)
 }
 
 func Request(client http.Client, req http.Request, cont []byte) ([]byte, error) {
@@ -60,12 +60,12 @@ func Request(client http.Client, req http.Request, cont []byte) ([]byte, error) 
 	return response, nil
 }
 
-func Query(client Client, t Type, reqInterface interface{}) (interface{}, error) {
+func Query(client Client, t Type, reqInterface interface{}) (Type, error) {
 	req := defReq
 	if client.clientId != "" {
 		req.Header.Set("Client-ID", client.clientId)
 	}
-	parsedReq, err := t.RequestParser(reqInterface)
+	parsedReq, err := t.RequestParser()
 	if err != nil {
 		return nil, err
 	}
@@ -75,5 +75,6 @@ func Query(client Client, t Type, reqInterface interface{}) (interface{}, error)
 		return nil, error
 	}
 	data, _ := jsoniter.Marshal(jsoniter.Get(res, "data"))
-	return t.ResponseParser(data), nil
+	t.ResponseParser(data)
+	return t, nil
 }

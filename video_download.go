@@ -19,28 +19,26 @@ type VideoDownloadResponse struct {
 	url    string
 }
 
-func (vd *VideoDownload) RequestParser(vdr VideoDownloadRequest) (string, error) {
-	if vdr == (VideoDownloadRequest{}) {
+func (vd *VideoDownload) RequestParser() (string, error) {
+	if vd.request == (VideoDownloadRequest{}) {
 		return "", nil
 	}
 	query := `download{`
-	if vdr.status {
+	if vd.request.status {
 		query += `status,`
 	}
-	if vdr.url {
+	if vd.request.url {
 		query += `url,`
 	}
 	query += `},`
 	return query, nil
 }
 
-func (vd *VideoDownload) ResponseParser(res []byte) (VideoDownloadResponse, error) {
-	response := VideoDownloadResponse{}
+func (vd *VideoDownload) ResponseParser(res []byte) {
 	if jsoniter.Get(res, "url").ToBool() {
-		response.url = jsoniter.Get(res, "url").ToString()
+		vd.response.url = jsoniter.Get(res, "url").ToString()
 	}
 	if jsoniter.Get(res, "status").ToBool() {
-		response.status = jsoniter.Get(res, "status").ToString()
+		vd.response.status = jsoniter.Get(res, "status").ToString()
 	}
-	return response, nil
 }
