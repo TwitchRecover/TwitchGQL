@@ -1,6 +1,8 @@
 package twitchgql
 
 import (
+	"errors"
+	"strconv"
 	"time"
 )
 
@@ -17,14 +19,14 @@ type VideoRequest struct {
 	creator             bool
 	deletedAt           bool
 	description         bool
-	download            bool
+	download            VideoDownload
 	duration            bool
 	game                bool
 	id                  bool
 	softDeleted         bool
 	language            bool
 	offsetSeconds       bool
-	playBackAccessToken PlaybackAccessTokenRequest
+	playBackAccessToken PlaybackAccessToken
 	publishedAt         bool
 	recordedAt          bool
 	scope               bool
@@ -55,7 +57,7 @@ type VideoResponse struct {
 	softDeleted         bool
 	language            string
 	offsetSeconds       int
-	PlaybackAccessToken PlaybackAccessTokenResponse
+	PlaybackAccessToken PlaybackAccessToken
 	publishedAt         time.Time
 	recordedAt          time.Time
 	scope               string
@@ -69,7 +71,93 @@ type VideoResponse struct {
 	viewableAt          time.Time
 }
 
-type VideoDownload struct {
-	status string
-	url    string
+func (v *Video) RequestParser() (string, error) {
+	req := v.request
+	query := `video(`
+	if req.params.id == 0 {
+		return "", errors.New("Video ID is required and was not provided")
+	}
+	query += `id:` + string(req.params.id) + `,`
+	query += `options:{includePrivate:` + strconv.FormatBool(req.params.includePrivate) + `}){`
+	if req.animatedPreviewUrl {
+		query += `animatedPreviewURL,`
+	}
+	if req.broadcastType {
+		query += `broadcastType,`
+	}
+	if req.createdAt {
+		query += `createdAt,`
+	}
+	if req.creator {
+		query += `creator,`
+	}
+	if req.deletedAt {
+		query += `deletedAt,`
+	}
+	if req.description {
+		query += `description,`
+	}
+	if req.download.request != (VideoDownloadRequest{}) {
+		downloadQuery, err := (req.download).RequestParser()
+		if err != nil {
+			return "", err
+		}
+		query += downloadQuery
+	}
+	if req.duration {
+		query += `lengthSeconds,`
+	}
+	if req.id {
+		query += `id,`
+	}
+	if req.softDeleted {
+		query += `isDeleted,`
+	}
+	if req.language {
+		query += `language,`
+	}
+	if req.offsetSeconds {
+		query += `offsetSeconds,`
+	}
+	if req.playBackAccessToken.request != (PlaybackAccessTokenRequest{}) {
+		playbackQuery, err := (req.playBackAccessToken).RequestParser()
+		if err != nil {
+			return "", err
+		}
+		query += playbackQuery
+	}
+	if req.publishedAt {
+		query += `publishedAt,`
+	}
+	if req.recordedAt {
+		query += `recordedAt,`
+	}
+	if req.scope {
+		query += `scope,`
+	}
+	if req.previewsUrl {
+		query += `previewThumbnailURL,`
+	}
+	if req.status {
+		query += `status,`
+	}
+	if req.tags {
+		query += `tags,`
+	}
+	if req.thumbnailUrls {
+		query += `thumbnailURLs,`
+	}
+	if req.title {
+		query += `title,`
+	}
+	if req.updatedAt {
+		query += `updatedAt,`
+	}
+	if req.viewCount {
+		query += `viewCount,`
+	}
+	if req.viewableAt {
+		query += `viewableAt,`
+	}
+	return query + `}`, nil
 }
