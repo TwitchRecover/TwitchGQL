@@ -60,7 +60,7 @@ func Request(client http.Client, req http.Request, cont []byte) ([]byte, error) 
 	return response, nil
 }
 
-func Query(client Client, t Type, reqInterface interface{}) (Type, error) {
+func Query(client Client, t Type) (Type, error) {
 	req := defReq
 	if client.clientId != "" {
 		req.Header.Set("Client-ID", client.clientId)
