@@ -107,7 +107,7 @@ func (v *Video) RequestParser() (string, error) {
 	if req.Description {
 		query += `description,`
 	}
-	if req.Download.Request != (VideoDownloadRequest{}) {
+	if req.Download != nil {
 		downloadQuery, err := (req.Download).RequestParser()
 		if err != nil {
 			return "", err
@@ -129,7 +129,7 @@ func (v *Video) RequestParser() (string, error) {
 	if req.OffsetSeconds {
 		query += `offsetSeconds,`
 	}
-	if req.PlaybackAccessToken.Request != (PlaybackAccessTokenRequest{}) {
+	if req.PlaybackAccessToken != nil {
 		playbackQuery, err := (req.PlaybackAccessToken).RequestParser()
 		if err != nil {
 			return "", err
@@ -202,7 +202,7 @@ func (v *Video) ResponseParser(res []byte) {
 	if req.Description {
 		v.Response.Description = jsoniter.Get(res, "description").ToString()
 	}
-	if req.Download.Request != (VideoDownloadRequest{}) {
+	if req.Download != nil {
 		download, _ := jsoniter.Marshal(jsoniter.Get(res, "download"))
 		(v.Request.Download).ResponseParser(download)
 		v.Response.Download = v.Request.Download
@@ -223,7 +223,7 @@ func (v *Video) ResponseParser(res []byte) {
 	if req.OffsetSeconds {
 		v.Response.OffsetSeconds = jsoniter.Get(res, "offsetSeconds").ToInt()
 	}
-	if req.PlaybackAccessToken.Request != (PlaybackAccessTokenRequest{}) {
+	if req.PlaybackAccessToken != nil {
 		pat, _ := jsoniter.Marshal(jsoniter.Get(res, "playbackAccessToken"))
 		(v.Request.PlaybackAccessToken).ResponseParser(pat)
 		v.Response.PlaybackAccessToken = v.Request.PlaybackAccessToken
