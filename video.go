@@ -2,6 +2,7 @@ package twitchgql
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -80,13 +81,13 @@ type ThumbnailParams struct {
 	Width  int
 }
 
-func (v *Video) RequestParser() (string, error) {
+func (v Video) RequestParser() (string, error) {
 	req := v.Request
 	query := `video(`
 	if req.Params.Id == 0 {
 		return "", errors.New("Video ID is required and was not provided")
 	}
-	query += `id:` + string(req.Params.Id) + `,`
+	query += `id:` + fmt.Sprint(req.Params.Id) + `,`
 	query += `options:{includePrivate:` + strconv.FormatBool(req.Params.IncludePrivate) + `}){`
 	if req.AnimatedPreviewUrl {
 		query += `animatedPreviewURL,`
@@ -157,13 +158,13 @@ func (v *Video) RequestParser() (string, error) {
 		if req.PreviewThumbnailUrl.Height == 0 || req.PreviewThumbnailUrl.Width == 0 {
 			return "", errors.New("Thumbnail height and/or width wasn't specified and both are required")
 		}
-		query += `previewThumbnailURL(height:` + string(req.PreviewThumbnailUrl.Height) + `,width:` + string(req.PreviewThumbnailUrl.Width) + `),`
+		query += `previewThumbnailURL(height:` + fmt.Sprint(req.PreviewThumbnailUrl.Height) + `,width:` + fmt.Sprint(req.PreviewThumbnailUrl.Width) + `),`
 	}
 	if req.ThumbnailUrls != (ThumbnailParams{}) {
 		if req.ThumbnailUrls.Height == 0 || req.ThumbnailUrls.Width == 0 {
 			return "", errors.New("Thumbnail height and/or width wasn't specified and both are required")
 		}
-		query += `thumbnailURLs(height:` + string(req.ThumbnailUrls.Height) + `,width:` + string(req.ThumbnailUrls.Width) + `),`
+		query += `thumbnailURLs(height:` + fmt.Sprint(req.ThumbnailUrls.Height) + `,width:` + fmt.Sprint(req.ThumbnailUrls.Width) + `),`
 	}
 	if req.Title {
 		query += `title,`
@@ -180,7 +181,7 @@ func (v *Video) RequestParser() (string, error) {
 	return query + `}`, nil
 }
 
-func (v *Video) ResponseParser(res []byte) {
+func (v Video) ResponseParser(res []byte) {
 	req := v.Request
 	if req.AnimatedPreviewUrl {
 		v.Response.AnimatedPreviewUrl = jsoniter.Get(res, "animatedPreviewURL").ToString()

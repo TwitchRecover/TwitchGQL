@@ -19,7 +19,7 @@ type VideoDownloadResponse struct {
 	Url    string
 }
 
-func (vd *VideoDownload) RequestParser() (string, error) {
+func (vd VideoDownload) RequestParser() (string, error) {
 	if vd.Request == (VideoDownloadRequest{}) {
 		return "", nil
 	}
@@ -33,7 +33,7 @@ func (vd *VideoDownload) RequestParser() (string, error) {
 	return query + `},`, nil
 }
 
-func (vd *VideoDownload) ResponseParser(res []byte) {
+func (vd VideoDownload) ResponseParser(res []byte) {
 	if vd.Request.Url {
 		vd.Response.Url = jsoniter.Get(res, "url").ToString()
 	}
