@@ -30,16 +30,16 @@ type PlaybackAccessTokenResponse struct {
 	Value     string
 }
 
-func (pat PlaybackAccessToken) RequestParser() (string, error) {
+func (pat *PlaybackAccessToken) RequestParser() (string, error) {
 	if pat.Request == (PlaybackAccessTokenRequest{}) {
 		return "", nil
 	}
 	query := `playbackAccessToken(params:{`
-	query += `platform:"` + pat.Request.Params.Platform + `",`
-	query += `playerType:"` + pat.Request.Params.PlayerType + `",`
-	query += `playerBackend:"` + pat.Request.Params.PlayerBackend + `",`
+	query += `platform:\"` + pat.Request.Params.Platform + `\",`
+	query += `playerType:\"` + pat.Request.Params.PlayerType + `\",`
+	query += `playerBackend:\"` + pat.Request.Params.PlayerBackend + `\",`
 	query += `hasAdblock:` + strconv.FormatBool(pat.Request.Params.HasAdblock) + `,`
-	query += `disableHTTPs:` + strconv.FormatBool(pat.Request.Params.DisableHTTPs) + `,`
+	query += `disableHTTPS:` + strconv.FormatBool(pat.Request.Params.DisableHTTPs) + `,`
 	query += `}){`
 	if pat.Request.Signature {
 		query += `signature,`
@@ -50,7 +50,7 @@ func (pat PlaybackAccessToken) RequestParser() (string, error) {
 	return query + `},`, nil
 }
 
-func (pat PlaybackAccessToken) ResponseParser(res []byte) {
+func (pat *PlaybackAccessToken) ResponseParser(res []byte) {
 	if pat.Request.Signature {
 		pat.Response.Signature = jsoniter.Get(res, "signature").ToString()
 	}

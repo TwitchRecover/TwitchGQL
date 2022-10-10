@@ -2,10 +2,12 @@ package twitchgql
 
 import (
 	"bytes"
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/json-iterator/go"
 )
@@ -25,7 +27,7 @@ var (
 		Path:   GqlPath,
 	}
 	headers = map[string][]string{
-		"Client-ID": {GqlClientId},
+		"Client-Id": {GqlClientId},
 	}
 	defReq = http.Request{
 		URL:    &GqlUrl,
@@ -44,11 +46,12 @@ type Type interface {
 	ResponseParser([]byte)
 }
 
-func Request(client http.Client, req http.Request, cont []byte) ([]byte, error) {
+func Request(client http.Client, req *http.Request, cont []byte) ([]byte, error) {
 	req.Body = ioutil.NopCloser(bytes.NewBuffer(cont))
-	res, err := client.Do(&req)
+	res, err := client.Do(req)
 	if err != nil || res.StatusCode != 200 {
 		if err == nil {
+			err = errors.New("Received non-200 status code " + strconv.Itoa(res.StatusCode))
 		}
 		return nil, err
 	}
@@ -61,7 +64,7 @@ func Request(client http.Client, req http.Request, cont []byte) ([]byte, error) 
 }
 
 func Query(client Client, t Type) (Type, error) {
-	req := defReq
+	req := &defReq
 	if client.ClientId != "" {
 		req.Header.Set("Client-ID", client.ClientId)
 	}

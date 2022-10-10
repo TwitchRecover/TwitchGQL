@@ -22,14 +22,14 @@ type VideoRequest struct {
 	Creator             bool
 	DeletedAt           bool
 	Description         bool
-	Download            VideoDownload
+	Download            *VideoDownload
 	Duration            bool
 	Game                bool
 	Id                  bool
 	SoftDeleted         bool
 	Language            bool
 	OffsetSeconds       bool
-	PlaybackAccessToken PlaybackAccessToken
+	PlaybackAccessToken *PlaybackAccessToken
 	PublishedAt         bool
 	RecordedAt          bool
 	Scope               bool
@@ -55,13 +55,13 @@ type VideoResponse struct {
 	CreatedAt           time.Time
 	DeletedAt           time.Time
 	Description         string
-	Download            VideoDownload
+	Download            *VideoDownload
 	Duration            time.Duration
 	Id                  int
 	SoftDeleted         bool
 	Language            string
 	OffsetSeconds       int
-	PlaybackAccessToken PlaybackAccessToken
+	PlaybackAccessToken *PlaybackAccessToken
 	PublishedAt         time.Time
 	RecordedAt          time.Time
 	Scope               string
@@ -81,7 +81,7 @@ type ThumbnailParams struct {
 	Width  int
 }
 
-func (v Video) RequestParser() (string, error) {
+func (v *Video) RequestParser() (string, error) {
 	req := v.Request
 	query := `video(`
 	if req.Params.Id == 0 {
@@ -181,8 +181,9 @@ func (v Video) RequestParser() (string, error) {
 	return query + `}`, nil
 }
 
-func (v Video) ResponseParser(res []byte) {
+func (v *Video) ResponseParser(res []byte) {
 	req := v.Request
+	res, _ = jsoniter.Marshal(jsoniter.Get(res, "video"))
 	if req.AnimatedPreviewUrl {
 		v.Response.AnimatedPreviewUrl = jsoniter.Get(res, "animatedPreviewURL").ToString()
 	}
@@ -223,7 +224,7 @@ func (v Video) ResponseParser(res []byte) {
 		v.Response.OffsetSeconds = jsoniter.Get(res, "offsetSeconds").ToInt()
 	}
 	if req.PlaybackAccessToken.Request != (PlaybackAccessTokenRequest{}) {
-		pat, _ := jsoniter.Marshal(jsoniter.Get(res, "playBackAccessToken").ToString())
+		pat, _ := jsoniter.Marshal(jsoniter.Get(res, "playbackAccessToken"))
 		(v.Request.PlaybackAccessToken).ResponseParser(pat)
 		v.Response.PlaybackAccessToken = v.Request.PlaybackAccessToken
 	}
