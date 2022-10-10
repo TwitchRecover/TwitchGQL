@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	"github.com/json-iterator/go"
 )
 
 const (
@@ -72,5 +74,6 @@ func Query(client Client, t Type, reqInterface interface{}) (interface{}, error)
 	if error != nil {
 		return nil, error
 	}
-	return t.ResponseParser(res), nil
+	data, _ := jsoniter.Marshal(jsoniter.Get(res, "data"))
+	return t.ResponseParser(data), nil
 }
