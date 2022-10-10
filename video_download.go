@@ -30,8 +30,7 @@ func (vd *VideoDownload) RequestParser() (string, error) {
 	if vd.request.url {
 		query += `url,`
 	}
-	query += `},`
-	return query, nil
+	return query + `},`, nil
 }
 
 func (vd *VideoDownload) ResponseParser(res []byte) {
