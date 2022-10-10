@@ -38,24 +38,24 @@ type Client struct {
 }
 
 type Type interface {
-	RequestParser(interface{}) string
-	ResponseParser(string) string
+	RequestParser(interface{}) (string, error)
+	ResponseParser([]byte) interface{}
 }
 
-func Request(client http.Client, req http.Request, cont []byte) (string, error) {
+func Request(client http.Client, req http.Request, cont []byte) ([]byte, error) {
 	req.Body = ioutil.NopCloser(bytes.NewBuffer(cont))
 	res, err := client.Do(&req)
 	if err != nil || res.StatusCode != 200 {
 		if err == nil {
 		}
-		return "", err
+		return nil, err
 	}
 	defer res.Body.Close()
 	response, error := io.ReadAll(res.Body)
 	if error != nil {
-		return "", error
+		return nil, error
 	}
-	return string(response), nil
+	return response, nil
 }
 
 func Query(client Client, t Type, reqInterface interface{}) (interface{}, error) {
@@ -63,10 +63,14 @@ func Query(client Client, t Type, reqInterface interface{}) (interface{}, error)
 	if client.clientId != "" {
 		req.Header.Set("Client-ID", client.clientId)
 	}
-	query := []byte(queryPre + t.RequestParser(reqInterface) + querySuf)
-	res, err := Request(client.http_client, req, query)
+	parsedReq, err := t.RequestParser(reqInterface)
 	if err != nil {
 		return nil, err
+	}
+	query := []byte(queryPre + parsedReq + querySuf)
+	res, error := Request(client.http_client, req, query)
+	if error != nil {
+		return nil, error
 	}
 	return t.ResponseParser(res), nil
 }
