@@ -5,279 +5,279 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 )
 
 type Video struct {
-	request  VideoRequest
-	response VideoResponse
+	Request  VideoRequest
+	Response VideoResponse
 }
 
 type VideoRequest struct {
-	params              VideoRequestParams
-	animatedPreviewUrl  bool
-	broadcastType       bool
-	createdAt           bool
-	creator             bool
-	deletedAt           bool
-	description         bool
-	download            VideoDownload
-	duration            bool
-	game                bool
-	id                  bool
-	softDeleted         bool
-	language            bool
-	offsetSeconds       bool
-	playbackAccessToken PlaybackAccessToken
-	publishedAt         bool
-	recordedAt          bool
-	scope               bool
-	previewsUrl         bool
-	status              bool
-	tags                bool
-	previewThumbnailUrl ThumbnailParams
-	thumbnailUrls       ThumbnailParams
-	title               bool
-	updatedAt           bool
-	viewCount           bool
-	viewableAt          bool
+	Params              VideoRequestParams
+	AnimatedPreviewUrl  bool
+	BroadcastType       bool
+	CreatedAt           bool
+	Creator             bool
+	DeletedAt           bool
+	Description         bool
+	Download            VideoDownload
+	Duration            bool
+	Game                bool
+	Id                  bool
+	SoftDeleted         bool
+	Language            bool
+	OffsetSeconds       bool
+	PlaybackAccessToken PlaybackAccessToken
+	PublishedAt         bool
+	RecordedAt          bool
+	Scope               bool
+	PreviewsUrl         bool
+	Status              bool
+	Tags                bool
+	PreviewThumbnailUrl ThumbnailParams
+	ThumbnailUrls       ThumbnailParams
+	Title               bool
+	UpdatedAt           bool
+	ViewCount           bool
+	ViewableAt          bool
 }
 
 type VideoRequestParams struct {
-	id             int
-	includePrivate bool // Include private videos. Will return an error if unauthenticated.
+	Id             int
+	IncludePrivate bool // Include private videos. Will return an error if unauthenticated.
 }
 
 type VideoResponse struct {
-	animatedPreviewUrl  string
-	broadcastType       string
-	createdAt           time.Time
-	deletedAt           time.Time
-	description         string
-	download            VideoDownload
-	duration            time.Duration
-	id                  int
-	softDeleted         bool
-	language            string
-	offsetSeconds       int
-	playbackAccessToken PlaybackAccessToken
-	publishedAt         time.Time
-	recordedAt          time.Time
-	scope               string
-	previewsUrl         string
-	status              string
-	tags                []string
-	previewThumbnailURL string
-	thumbnailUrls       []string
-	title               string
-	updatedAt           time.Time
-	viewCount           int
-	viewableAt          time.Time
+	AnimatedPreviewUrl  string
+	BroadcastType       string
+	CreatedAt           time.Time
+	DeletedAt           time.Time
+	Description         string
+	Download            VideoDownload
+	Duration            time.Duration
+	Id                  int
+	SoftDeleted         bool
+	Language            string
+	OffsetSeconds       int
+	PlaybackAccessToken PlaybackAccessToken
+	PublishedAt         time.Time
+	RecordedAt          time.Time
+	Scope               string
+	PreviewsUrl         string
+	Status              string
+	Tags                []string
+	PreviewThumbnailURL string
+	ThumbnailUrls       []string
+	Title               string
+	UpdatedAt           time.Time
+	ViewCount           int
+	ViewableAt          time.Time
 }
 
 type ThumbnailParams struct {
-	height int
-	width  int
+	Height int
+	Width  int
 }
 
 func (v *Video) RequestParser() (string, error) {
-	req := v.request
+	req := v.Request
 	query := `video(`
-	if req.params.id == 0 {
+	if req.Params.Id == 0 {
 		return "", errors.New("Video ID is required and was not provided")
 	}
-	query += `id:` + string(req.params.id) + `,`
-	query += `options:{includePrivate:` + strconv.FormatBool(req.params.includePrivate) + `}){`
-	if req.animatedPreviewUrl {
+	query += `id:` + string(req.Params.Id) + `,`
+	query += `options:{includePrivate:` + strconv.FormatBool(req.Params.IncludePrivate) + `}){`
+	if req.AnimatedPreviewUrl {
 		query += `animatedPreviewURL,`
 	}
-	if req.broadcastType {
+	if req.BroadcastType {
 		query += `broadcastType,`
 	}
-	if req.createdAt {
+	if req.CreatedAt {
 		query += `createdAt,`
 	}
-	if req.creator {
+	if req.Creator {
 		query += `creator,`
 	}
-	if req.deletedAt {
+	if req.DeletedAt {
 		query += `deletedAt,`
 	}
-	if req.description {
+	if req.Description {
 		query += `description,`
 	}
-	if req.download.request != (VideoDownloadRequest{}) {
-		downloadQuery, err := (req.download).RequestParser()
+	if req.Download.Request != (VideoDownloadRequest{}) {
+		downloadQuery, err := (req.Download).RequestParser()
 		if err != nil {
 			return "", err
 		}
 		query += downloadQuery
 	}
-	if req.duration {
+	if req.Duration {
 		query += `lengthSeconds,`
 	}
-	if req.id {
+	if req.Id {
 		query += `id,`
 	}
-	if req.softDeleted {
+	if req.SoftDeleted {
 		query += `isDeleted,`
 	}
-	if req.language {
+	if req.Language {
 		query += `language,`
 	}
-	if req.offsetSeconds {
+	if req.OffsetSeconds {
 		query += `offsetSeconds,`
 	}
-	if req.playbackAccessToken.request != (PlaybackAccessTokenRequest{}) {
-		playbackQuery, err := (req.playbackAccessToken).RequestParser()
+	if req.PlaybackAccessToken.Request != (PlaybackAccessTokenRequest{}) {
+		playbackQuery, err := (req.PlaybackAccessToken).RequestParser()
 		if err != nil {
 			return "", err
 		}
 		query += playbackQuery
 	}
-	if req.publishedAt {
+	if req.PublishedAt {
 		query += `publishedAt,`
 	}
-	if req.recordedAt {
+	if req.RecordedAt {
 		query += `recordedAt,`
 	}
-	if req.scope {
+	if req.Scope {
 		query += `scope,`
 	}
-	if req.previewsUrl {
+	if req.PreviewsUrl {
 		query += `seekPreviewsURL,`
 	}
-	if req.status {
+	if req.Status {
 		query += `status,`
 	}
-	if req.tags {
+	if req.Tags {
 		query += `tags,`
 	}
-	if req.previewThumbnailUrl != (ThumbnailParams{}) {
-		if req.previewThumbnailUrl.height == 0 || req.previewThumbnailUrl.width == 0 {
+	if req.PreviewThumbnailUrl != (ThumbnailParams{}) {
+		if req.PreviewThumbnailUrl.Height == 0 || req.PreviewThumbnailUrl.Width == 0 {
 			return "", errors.New("Thumbnail height and/or width wasn't specified and both are required")
 		}
-		query += `previewThumbnailURL(height:` + string(req.previewThumbnailUrl.height) + `,width:` + string(req.previewThumbnailUrl.width) + `),`
+		query += `previewThumbnailURL(height:` + string(req.PreviewThumbnailUrl.Height) + `,width:` + string(req.PreviewThumbnailUrl.Width) + `),`
 	}
-	if req.thumbnailUrls != (ThumbnailParams{}) {
-		if req.thumbnailUrls.height == 0 || req.thumbnailUrls.width == 0 {
+	if req.ThumbnailUrls != (ThumbnailParams{}) {
+		if req.ThumbnailUrls.Height == 0 || req.ThumbnailUrls.Width == 0 {
 			return "", errors.New("Thumbnail height and/or width wasn't specified and both are required")
 		}
-		query += `thumbnailURLs(height:` + string(req.thumbnailUrls.height) + `,width:` + string(req.thumbnailUrls.width) + `),`
+		query += `thumbnailURLs(height:` + string(req.ThumbnailUrls.Height) + `,width:` + string(req.ThumbnailUrls.Width) + `),`
 	}
-	if req.title {
+	if req.Title {
 		query += `title,`
 	}
-	if req.updatedAt {
+	if req.UpdatedAt {
 		query += `updatedAt,`
 	}
-	if req.viewCount {
+	if req.ViewCount {
 		query += `viewCount,`
 	}
-	if req.viewableAt {
+	if req.ViewableAt {
 		query += `viewableAt,`
 	}
 	return query + `}`, nil
 }
 
 func (v *Video) ResponseParser(res []byte) {
-	req := v.request
-	if req.animatedPreviewUrl {
-		v.response.animatedPreviewUrl = jsoniter.Get(res, "animatedPreviewURL").ToString()
+	req := v.Request
+	if req.AnimatedPreviewUrl {
+		v.Response.AnimatedPreviewUrl = jsoniter.Get(res, "animatedPreviewURL").ToString()
 	}
-	if req.broadcastType {
-		v.response.broadcastType = jsoniter.Get(res, "broadcastType").ToString()
+	if req.BroadcastType {
+		v.Response.BroadcastType = jsoniter.Get(res, "broadcastType").ToString()
 	}
-	if req.createdAt {
-		v.response.createdAt, _ = time.Parse(time.RFC3339, jsoniter.Get(res, "createdAt").ToString())
+	if req.CreatedAt {
+		v.Response.CreatedAt, _ = time.Parse(time.RFC3339, jsoniter.Get(res, "createdAt").ToString())
 	}
-	if req.deletedAt {
+	if req.DeletedAt {
 		deletedAt := jsoniter.Get(res, "deletedAt").ToString()
 		if deletedAt != "null" {
-			v.response.deletedAt, _ = time.Parse(time.RFC3339, deletedAt)
+			v.Response.DeletedAt, _ = time.Parse(time.RFC3339, deletedAt)
 		}
 	}
-	if req.description {
-		v.response.description = jsoniter.Get(res, "description").ToString()
+	if req.Description {
+		v.Response.Description = jsoniter.Get(res, "description").ToString()
 	}
-	if req.download.request != (VideoDownloadRequest{}) {
+	if req.Download.Request != (VideoDownloadRequest{}) {
 		download, _ := jsoniter.Marshal(jsoniter.Get(res, "download"))
-		(v.request.download).ResponseParser(download)
-		v.response.download = v.request.download
+		(v.Request.Download).ResponseParser(download)
+		v.Response.Download = v.Request.Download
 	}
-	if req.duration {
+	if req.Duration {
 		durationSeconds := jsoniter.Get(res, "lengthSeconds").ToString() + "s"
-		v.response.duration, _ = time.ParseDuration(durationSeconds)
+		v.Response.Duration, _ = time.ParseDuration(durationSeconds)
 	}
-	if req.id {
-		v.response.id = jsoniter.Get(res, "id").ToInt()
+	if req.Id {
+		v.Response.Id = jsoniter.Get(res, "id").ToInt()
 	}
-	if req.softDeleted {
-		v.response.softDeleted = jsoniter.Get(res, "isDeleted").ToBool()
+	if req.SoftDeleted {
+		v.Response.SoftDeleted = jsoniter.Get(res, "isDeleted").ToBool()
 	}
-	if req.language {
-		v.response.language = jsoniter.Get(res, "language").ToString()
+	if req.Language {
+		v.Response.Language = jsoniter.Get(res, "language").ToString()
 	}
-	if req.offsetSeconds {
-		v.response.offsetSeconds = jsoniter.Get(res, "offsetSeconds").ToInt()
+	if req.OffsetSeconds {
+		v.Response.OffsetSeconds = jsoniter.Get(res, "offsetSeconds").ToInt()
 	}
-	if req.playbackAccessToken.request != (PlaybackAccessTokenRequest{}) {
+	if req.PlaybackAccessToken.Request != (PlaybackAccessTokenRequest{}) {
 		pat, _ := jsoniter.Marshal(jsoniter.Get(res, "playBackAccessToken").ToString())
-		(v.request.playbackAccessToken).ResponseParser(pat)
-		v.response.playbackAccessToken = v.request.playbackAccessToken
+		(v.Request.PlaybackAccessToken).ResponseParser(pat)
+		v.Response.PlaybackAccessToken = v.Request.PlaybackAccessToken
 	}
-	if req.publishedAt {
+	if req.PublishedAt {
 		publishedAt := jsoniter.Get(res, "publishedAt").ToString()
-		v.response.publishedAt, _ = time.Parse(time.RFC3339, publishedAt)
+		v.Response.PublishedAt, _ = time.Parse(time.RFC3339, publishedAt)
 	}
-	if req.recordedAt {
+	if req.RecordedAt {
 		recordedAt := jsoniter.Get(res, "recordedAt").ToString()
-		v.response.recordedAt, _ = time.Parse(time.RFC3339, recordedAt)
+		v.Response.RecordedAt, _ = time.Parse(time.RFC3339, recordedAt)
 	}
-	if req.scope {
-		v.response.scope = jsoniter.Get(res, "scope").ToString()
+	if req.Scope {
+		v.Response.Scope = jsoniter.Get(res, "scope").ToString()
 	}
-	if req.previewsUrl {
-		v.response.previewsUrl = jsoniter.Get(res, "seekPreviewsURL").ToString()
+	if req.PreviewsUrl {
+		v.Response.PreviewsUrl = jsoniter.Get(res, "seekPreviewsURL").ToString()
 	}
-	if req.status {
-		v.response.status = jsoniter.Get(res, "status").ToString()
+	if req.Status {
+		v.Response.Status = jsoniter.Get(res, "status").ToString()
 	}
-	if req.tags {
+	if req.Tags {
 		jsonTags := jsoniter.Get(res, "tags")
 		tags := make([]string, 0)
 		for i := 0; i < jsonTags.Size(); i++ {
 			tags = append(tags, jsonTags.Get(i).ToString())
 		}
-		v.response.tags = tags
+		v.Response.Tags = tags
 	}
-	if req.previewThumbnailUrl != (ThumbnailParams{}) {
-		v.response.previewThumbnailURL = jsoniter.Get(res, "previewThumbnailURL").ToString()
+	if req.PreviewThumbnailUrl != (ThumbnailParams{}) {
+		v.Response.PreviewThumbnailURL = jsoniter.Get(res, "previewThumbnailURL").ToString()
 	}
-	if req.thumbnailUrls != (ThumbnailParams{}) {
+	if req.ThumbnailUrls != (ThumbnailParams{}) {
 		jsonThumbnailUrls := jsoniter.Get(res, "thumbnailURLs")
 		thumbnailUrls := make([]string, 0)
 		for i := 0; i < jsonThumbnailUrls.Size(); i++ {
 			thumbnailUrls = append(thumbnailUrls, jsonThumbnailUrls.Get(i).ToString())
 		}
-		v.response.thumbnailUrls = thumbnailUrls
+		v.Response.ThumbnailUrls = thumbnailUrls
 	}
-	if req.title {
-		v.response.title = jsoniter.Get(res, "title").ToString()
+	if req.Title {
+		v.Response.Title = jsoniter.Get(res, "title").ToString()
 	}
-	if req.updatedAt {
+	if req.UpdatedAt {
 		updatedAt := jsoniter.Get(res, "updatedAt").ToString()
 		if updatedAt != "null" {
-			v.response.updatedAt, _ = time.Parse(time.RFC3339, updatedAt)
+			v.Response.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAt)
 		}
 	}
-	if req.viewCount {
-		v.response.viewCount = jsoniter.Get(res, "viewCount").ToInt()
+	if req.ViewCount {
+		v.Response.ViewCount = jsoniter.Get(res, "viewCount").ToInt()
 	}
-	if req.viewableAt {
+	if req.ViewableAt {
 		viewableAt := jsoniter.Get(res, "viewableAt").ToString()
 		if viewableAt != "null" {
-			v.response.viewableAt, _ = time.Parse(time.RFC3339, viewableAt)
+			v.Response.ViewableAt, _ = time.Parse(time.RFC3339, viewableAt)
 		}
 	}
 }

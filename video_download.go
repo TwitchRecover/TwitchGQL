@@ -5,39 +5,39 @@ import (
 )
 
 type VideoDownload struct {
-	request  VideoDownloadRequest
-	response VideoDownloadResponse
+	Request  VideoDownloadRequest
+	Response VideoDownloadResponse
 }
 
 type VideoDownloadRequest struct {
-	status bool
-	url    bool
+	Status bool
+	Url    bool
 }
 
 type VideoDownloadResponse struct {
-	status string
-	url    string
+	Status string
+	Url    string
 }
 
 func (vd *VideoDownload) RequestParser() (string, error) {
-	if vd.request == (VideoDownloadRequest{}) {
+	if vd.Request == (VideoDownloadRequest{}) {
 		return "", nil
 	}
 	query := `download{`
-	if vd.request.status {
+	if vd.Request.Status {
 		query += `status,`
 	}
-	if vd.request.url {
+	if vd.Request.Url {
 		query += `url,`
 	}
 	return query + `},`, nil
 }
 
 func (vd *VideoDownload) ResponseParser(res []byte) {
-	if vd.request.url {
-		vd.response.url = jsoniter.Get(res, "url").ToString()
+	if vd.Request.Url {
+		vd.Response.Url = jsoniter.Get(res, "url").ToString()
 	}
-	if vd.request.status {
-		vd.response.status = jsoniter.Get(res, "status").ToString()
+	if vd.Request.Status {
+		vd.Response.Status = jsoniter.Get(res, "status").ToString()
 	}
 }

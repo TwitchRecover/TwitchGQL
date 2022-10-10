@@ -7,54 +7,54 @@ import (
 )
 
 type PlaybackAccessToken struct {
-	request  PlaybackAccessTokenRequest
-	response PlaybackAccessTokenResponse
+	Request  PlaybackAccessTokenRequest
+	Response PlaybackAccessTokenResponse
 }
 
 type PlaybackAccessTokenRequest struct {
-	params    PlaybackAccessTokenRequestParams
-	signature bool
-	value     bool
+	Params    PlaybackAccessTokenRequestParams
+	Signature bool
+	Value     bool
 }
 
 type PlaybackAccessTokenRequestParams struct {
-	platform      string
-	playerType    string
-	playerBackend string
-	hasAdblock    bool
-	disableHTTPs  bool
+	Platform      string
+	PlayerType    string
+	PlayerBackend string
+	HasAdblock    bool
+	DisableHTTPs  bool
 }
 
 type PlaybackAccessTokenResponse struct {
-	signature string
-	value     string
+	Signature string
+	Value     string
 }
 
 func (pat *PlaybackAccessToken) RequestParser() (string, error) {
-	if pat.request == (PlaybackAccessTokenRequest{}) {
+	if pat.Request == (PlaybackAccessTokenRequest{}) {
 		return "", nil
 	}
 	query := `playbackAccessToken(params:{`
-	query += `platform:"` + pat.request.params.platform + `",`
-	query += `playerType:"` + pat.request.params.playerType + `",`
-	query += `playerBackend:"` + pat.request.params.playerBackend + `",`
-	query += `hasAdblock:` + strconv.FormatBool(pat.request.params.hasAdblock) + `,`
-	query += `disableHTTPs:` + strconv.FormatBool(pat.request.params.disableHTTPs) + `,`
+	query += `platform:"` + pat.Request.Params.Platform + `",`
+	query += `playerType:"` + pat.Request.Params.PlayerType + `",`
+	query += `playerBackend:"` + pat.Request.Params.PlayerBackend + `",`
+	query += `hasAdblock:` + strconv.FormatBool(pat.Request.Params.HasAdblock) + `,`
+	query += `disableHTTPs:` + strconv.FormatBool(pat.Request.Params.DisableHTTPs) + `,`
 	query += `}){`
-	if pat.request.signature {
+	if pat.Request.Signature {
 		query += `signature,`
 	}
-	if pat.request.value {
+	if pat.Request.Value {
 		query += `value,`
 	}
 	return query + `},`, nil
 }
 
 func (pat *PlaybackAccessToken) ResponseParser(res []byte) {
-	if pat.request.signature {
-		pat.response.signature = jsoniter.Get(res, "signature").ToString()
+	if pat.Request.Signature {
+		pat.Response.Signature = jsoniter.Get(res, "signature").ToString()
 	}
-	if pat.request.value {
-		pat.response.value = jsoniter.Get(res, "value").ToString()
+	if pat.Request.Value {
+		pat.Response.Value = jsoniter.Get(res, "value").ToString()
 	}
 }

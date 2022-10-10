@@ -11,32 +11,32 @@ import (
 )
 
 const (
-	gqlHost     = "gql.twitch.tv"
-	gqlPath     = "gql"
-	gqlClientId = "kimne78kx3ncx6brgo4mv6wki5h1ko"
+	GqlHost     = "gql.twitch.tv"
+	GqlPath     = "gql"
+	GqlClientId = "kimne78kx3ncx6brgo4mv6wki5h1ko"
 	queryPre    = `{"query":"query{`
 	querySuf    = `}"}`
 )
 
 var (
-	gqlUrl = url.URL{
+	GqlUrl = url.URL{
 		Scheme: "https",
-		Host:   gqlHost,
-		Path:   gqlPath,
+		Host:   GqlHost,
+		Path:   GqlPath,
 	}
 	headers = map[string][]string{
-		"Client-ID": {gqlClientId},
+		"Client-ID": {GqlClientId},
 	}
 	defReq = http.Request{
-		URL:    &gqlUrl,
+		URL:    &GqlUrl,
 		Header: headers,
 		Method: "POST",
 	}
 )
 
 type Client struct {
-	clientId    string
-	http_client http.Client
+	ClientId string
+	Client   http.Client
 }
 
 type Type interface {
@@ -62,15 +62,15 @@ func Request(client http.Client, req http.Request, cont []byte) ([]byte, error) 
 
 func Query(client Client, t Type) (Type, error) {
 	req := defReq
-	if client.clientId != "" {
-		req.Header.Set("Client-ID", client.clientId)
+	if client.ClientId != "" {
+		req.Header.Set("Client-ID", client.ClientId)
 	}
 	parsedReq, err := t.RequestParser()
 	if err != nil {
 		return nil, err
 	}
 	query := []byte(queryPre + parsedReq + querySuf)
-	res, error := Request(client.http_client, req, query)
+	res, error := Request(client.Client, req, query)
 	if error != nil {
 		return nil, error
 	}
