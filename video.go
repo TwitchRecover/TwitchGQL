@@ -36,8 +36,8 @@ type VideoRequest struct {
 	PreviewsUrl         bool
 	Status              bool
 	Tags                bool
-	PreviewThumbnailUrl ThumbnailParams
-	ThumbnailUrls       ThumbnailParams
+	PreviewThumbnailUrl ImageParams
+	ThumbnailUrls       ImageParams
 	Title               bool
 	UpdatedAt           bool
 	ViewCount           bool
@@ -74,11 +74,6 @@ type VideoResponse struct {
 	UpdatedAt           time.Time
 	ViewCount           int
 	ViewableAt          time.Time
-}
-
-type ThumbnailParams struct {
-	Height int
-	Width  int
 }
 
 func (v *Video) RequestParser() (string, error) {
@@ -154,13 +149,13 @@ func (v *Video) RequestParser() (string, error) {
 	if req.Tags {
 		query += `tags,`
 	}
-	if req.PreviewThumbnailUrl != (ThumbnailParams{}) {
+	if req.PreviewThumbnailUrl != (ImageParams{}) {
 		if req.PreviewThumbnailUrl.Height == 0 || req.PreviewThumbnailUrl.Width == 0 {
 			return "", errors.New("Thumbnail height and/or width wasn't specified and both are required")
 		}
 		query += `previewThumbnailURL(height:` + fmt.Sprint(req.PreviewThumbnailUrl.Height) + `,width:` + fmt.Sprint(req.PreviewThumbnailUrl.Width) + `),`
 	}
-	if req.ThumbnailUrls != (ThumbnailParams{}) {
+	if req.ThumbnailUrls != (ImageParams{}) {
 		if req.ThumbnailUrls.Height == 0 || req.ThumbnailUrls.Width == 0 {
 			return "", errors.New("Thumbnail height and/or width wasn't specified and both are required")
 		}
@@ -253,10 +248,10 @@ func (v *Video) ResponseParser(res []byte) {
 		}
 		v.Response.Tags = tags
 	}
-	if req.PreviewThumbnailUrl != (ThumbnailParams{}) {
+	if req.PreviewThumbnailUrl != (ImageParams{}) {
 		v.Response.PreviewThumbnailURL = jsoniter.Get(res, "previewThumbnailURL").ToString()
 	}
-	if req.ThumbnailUrls != (ThumbnailParams{}) {
+	if req.ThumbnailUrls != (ImageParams{}) {
 		jsonThumbnailUrls := jsoniter.Get(res, "thumbnailURLs")
 		thumbnailUrls := make([]string, 0)
 		for i := 0; i < jsonThumbnailUrls.Size(); i++ {
