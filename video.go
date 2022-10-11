@@ -177,70 +177,69 @@ func (v *Video) RequestParser() (string, error) {
 }
 
 func (v *Video) ResponseParser(res []byte) {
-	req := v.Request
 	res, _ = jsoniter.Marshal(jsoniter.Get(res, "video"))
-	if req.AnimatedPreviewUrl {
+	if jsoniter.Get(res, "animatedPreviewURL").Size() > 0 {
 		v.Response.AnimatedPreviewUrl = jsoniter.Get(res, "animatedPreviewURL").ToString()
 	}
-	if req.BroadcastType {
+	if jsoniter.Get(res, "broadcastType").Size() > 0 {
 		v.Response.BroadcastType = jsoniter.Get(res, "broadcastType").ToString()
 	}
-	if req.CreatedAt {
+	if jsoniter.Get(res, "createdAt").Size() > 0 {
 		v.Response.CreatedAt, _ = time.Parse(time.RFC3339, jsoniter.Get(res, "createdAt").ToString())
 	}
-	if req.DeletedAt {
+	if jsoniter.Get(res, "deletedAt").Size() > 0 {
 		deletedAt := jsoniter.Get(res, "deletedAt").ToString()
 		if deletedAt != "null" {
 			v.Response.DeletedAt, _ = time.Parse(time.RFC3339, deletedAt)
 		}
 	}
-	if req.Description {
+	if jsoniter.Get(res, "description").Size() > 0 {
 		v.Response.Description = jsoniter.Get(res, "description").ToString()
 	}
-	if req.Download != nil {
+	if jsoniter.Get(res, "download").Size() > 0 {
 		download, _ := jsoniter.Marshal(jsoniter.Get(res, "download"))
 		(v.Request.Download).ResponseParser(download)
 		v.Response.Download = v.Request.Download
 	}
-	if req.Duration {
+	if jsoniter.Get(res, "lengthSeconds").Size() > 0 {
 		durationSeconds := jsoniter.Get(res, "lengthSeconds").ToString() + "s"
 		v.Response.Duration, _ = time.ParseDuration(durationSeconds)
 	}
-	if req.Id {
+	if jsoniter.Get(res, "id").Size() > 0 {
 		v.Response.Id = jsoniter.Get(res, "id").ToInt()
 	}
-	if req.SoftDeleted {
+	if jsoniter.Get(res, "isDeleted").Size() > 0 {
 		v.Response.SoftDeleted = jsoniter.Get(res, "isDeleted").ToBool()
 	}
-	if req.Language {
+	if jsoniter.Get(res, "language").Size() > 0 {
 		v.Response.Language = jsoniter.Get(res, "language").ToString()
 	}
-	if req.OffsetSeconds {
+	if jsoniter.Get(res, "offsetSeconds").Size() > 0 {
 		v.Response.OffsetSeconds = jsoniter.Get(res, "offsetSeconds").ToInt()
 	}
-	if req.PlaybackAccessToken != nil {
+	if jsoniter.Get(res, "playbackAccessToken").Size() > 0 {
 		pat, _ := jsoniter.Marshal(jsoniter.Get(res, "playbackAccessToken"))
 		(v.Request.PlaybackAccessToken).ResponseParser(pat)
 		v.Response.PlaybackAccessToken = v.Request.PlaybackAccessToken
 	}
-	if req.PublishedAt {
+	if jsoniter.Get(res, "publishedAt").Size() > 0 {
 		publishedAt := jsoniter.Get(res, "publishedAt").ToString()
 		v.Response.PublishedAt, _ = time.Parse(time.RFC3339, publishedAt)
 	}
-	if req.RecordedAt {
+	if jsoniter.Get(res, "recordedAt").Size() > 0 {
 		recordedAt := jsoniter.Get(res, "recordedAt").ToString()
 		v.Response.RecordedAt, _ = time.Parse(time.RFC3339, recordedAt)
 	}
-	if req.Scope {
+	if jsoniter.Get(res, "scope").Size() > 0 {
 		v.Response.Scope = jsoniter.Get(res, "scope").ToString()
 	}
-	if req.PreviewsUrl {
+	if jsoniter.Get(res, "seekPreviewsURL").Size() > 0 {
 		v.Response.PreviewsUrl = jsoniter.Get(res, "seekPreviewsURL").ToString()
 	}
-	if req.Status {
+	if jsoniter.Get(res, "status").Size() > 0 {
 		v.Response.Status = jsoniter.Get(res, "status").ToString()
 	}
-	if req.Tags {
+	if jsoniter.Get(res, "tags").Size() > 0 {
 		jsonTags := jsoniter.Get(res, "tags")
 		tags := make([]string, 0)
 		for i := 0; i < jsonTags.Size(); i++ {
@@ -248,10 +247,10 @@ func (v *Video) ResponseParser(res []byte) {
 		}
 		v.Response.Tags = tags
 	}
-	if req.PreviewThumbnailUrl != (ImageParams{}) {
+	if jsoniter.Get(res, "previewThumbnailURL").Size() > 0 {
 		v.Response.PreviewThumbnailURL = jsoniter.Get(res, "previewThumbnailURL").ToString()
 	}
-	if req.ThumbnailUrls != (ImageParams{}) {
+	if jsoniter.Get(res, "thumbnailURLs").Size() > 0 {
 		jsonThumbnailUrls := jsoniter.Get(res, "thumbnailURLs")
 		thumbnailUrls := make([]string, 0)
 		for i := 0; i < jsonThumbnailUrls.Size(); i++ {
@@ -259,22 +258,23 @@ func (v *Video) ResponseParser(res []byte) {
 		}
 		v.Response.ThumbnailUrls = thumbnailUrls
 	}
-	if req.Title {
+	if jsoniter.Get(res, "title").Size() > 0 {
 		v.Response.Title = jsoniter.Get(res, "title").ToString()
 	}
-	if req.UpdatedAt {
+	if jsoniter.Get(res, "updatedAt").Size() > 0 {
 		updatedAt := jsoniter.Get(res, "updatedAt").ToString()
 		if updatedAt != "null" {
 			v.Response.UpdatedAt, _ = time.Parse(time.RFC3339, updatedAt)
 		}
 	}
-	if req.ViewCount {
+	if jsoniter.Get(res, "viewCount").Size() > 0 {
 		v.Response.ViewCount = jsoniter.Get(res, "viewCount").ToInt()
 	}
-	if req.ViewableAt {
+	if jsoniter.Get(res, "viewableAt").Size() > 0 {
 		viewableAt := jsoniter.Get(res, "viewableAt").ToString()
 		if viewableAt != "null" {
 			v.Response.ViewableAt, _ = time.Parse(time.RFC3339, viewableAt)
 		}
 	}
+	return
 }
