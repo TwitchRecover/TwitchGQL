@@ -32,7 +32,6 @@ func (pi *PageInfo) RequestParser() (string, error) {
 }
 
 func (pi *PageInfo) ResponseParser(res []byte) {
-	res, _ = jsoniter.Marshal(jsoniter.Get(res, "pageInfo"))
 	pi.Response.hasNextPage = jsoniter.Get(res, "hasNextPage").ToBool()
 	pi.Response.hasPreviousPage = jsoniter.Get(res, "hasPreviousPage").ToBool()
 }
